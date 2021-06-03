@@ -1,5 +1,7 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
+import br.com.zupacademy.lincon.proposta.exceptionhandlers.NegocioException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,12 @@ public class CriaNovaPropostaController {
     public ResponseEntity<?> cria(
             @RequestBody @Valid NovaPropostaRequest request,
             UriComponentsBuilder builder) {
+
+        if(!BloqueiaDocumentoDuplicatoValidator.estaValido(manager, request)){
+            throw new NegocioException("Documento já existe em nossa base de " +
+                    "dados",
+                    HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
         Proposta novaProposta = request.toModel();
         manager.persist(novaProposta);

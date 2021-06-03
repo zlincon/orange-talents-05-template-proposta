@@ -1,5 +1,8 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
+import br.com.zupacademy.lincon.proposta.compartilhado.UniqueValue;
+import org.springframework.web.client.HttpClientErrorException;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,5 +36,9 @@ public class NovaPropostaRequest {
 
     public Proposta toModel() {
         return new Proposta(email, nome, endereco, salario, documento);
+    }
+
+    public String getDocumento() {
+        return documento;
     }
 }
