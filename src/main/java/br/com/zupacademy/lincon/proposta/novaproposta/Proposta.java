@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
@@ -27,6 +28,8 @@ public class Proposta {
     @CPForCNPJ
     @NotBlank
     private String documento;
+    @NotNull
+    private StatusAvaliacaoProposta statusAvaliacao;
 
     public Proposta(String email,
                     String nome,
@@ -38,10 +41,20 @@ public class Proposta {
         this.endereco = endereco;
         this.salario = salario;
         this.documento = documento;
+        this.statusAvaliacao = StatusAvaliacaoProposta.NAO_ELEGIVEL;
     }
 
     public Long getId() {
         Assert.notNull(id, "O objeto não possui id.");
         return id;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void atualizaStatus(StatusAvaliacaoProposta avaliacao) {
+        Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.NAO_ELEGIVEL), "Não pode mais trocar uma vez que a proposta é elegível.");
+        this.statusAvaliacao = statusAvaliacao;
     }
 }

@@ -1,6 +1,7 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
 import br.com.zupacademy.lincon.proposta.exceptionhandlers.NegocioException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,12 @@ import java.net.URI;
 
 @RestController
 public class CriaNovaPropostaController {
-
-    @PersistenceContext
-    private EntityManager manager;
+    @Autowired
+    private ExecutorTransacao executorTransacao;
+    @Autowired
+    private AvaliaProposta avaliaProposta;
+    @Autowired
+    private BloqueiaDocumentoDuplicatoValidator bloqueiaDocumentoDuplicatoValidator;
 
     @PostMapping(value = "/propostas")
     @Transactional
@@ -26,14 +30,18 @@ public class CriaNovaPropostaController {
             @RequestBody @Valid NovaPropostaRequest request,
             UriComponentsBuilder builder) {
 
-        if(!BloqueiaDocumentoDuplicatoValidator.estaValido(manager, request)){
+        if(!bloqueiaDocumentoDuplicatoValidator.estaValido(request)){
             throw new NegocioException("Documento já existe em nossa base de " +
                     "dados",
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         Proposta novaProposta = request.toModel();
-        manager.persist(novaProposta);
+        executorTransacao.saveAndCommit(novaProposta);
+
+        StatusAvaliacaoProposta avaliacao = avaliaProposta.executa(novaProposta);
+        novaProposta.atualizaStatus(avaliacao);
+        executorTransacao.updateAndCommit(novaProposta);
 
         URI enderecoConsulta =
                 builder.path("/propostas/{id}").build(novaProposta.getId());
