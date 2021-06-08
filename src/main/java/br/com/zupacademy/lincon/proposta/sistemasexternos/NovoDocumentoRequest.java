@@ -19,4 +19,7 @@ public class NovoDocumentoRequest {
         this.documento = proposta.getDocumento();
     }
 
+    public String getDocumento() {
+        return documento;
+    }
 }

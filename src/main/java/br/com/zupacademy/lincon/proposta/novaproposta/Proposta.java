@@ -2,10 +2,7 @@ package br.com.zupacademy.lincon.proposta.novaproposta;
 
 import org.springframework.util.Assert;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,6 +26,7 @@ public class Proposta {
     @NotBlank
     private String documento;
     @NotNull
+    @Enumerated(EnumType.STRING)
     private StatusAvaliacaoProposta statusAvaliacao;
 
     public Proposta(String email,
@@ -55,6 +53,6 @@ public class Proposta {
 
     public void atualizaStatus(StatusAvaliacaoProposta avaliacao) {
         Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.NAO_ELEGIVEL), "Não pode mais trocar uma vez que a proposta é elegível.");
-        this.statusAvaliacao = statusAvaliacao;
+        this.statusAvaliacao = avaliacao;
     }
 }

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface Integracoes {
 
     @PostMapping("/solicitacao")
-    public String avalia(NovoDocumentoRequest request);
+    public ResultadoSolicitacaoResponse avalia(NovoDocumentoRequest request);
 
 }
