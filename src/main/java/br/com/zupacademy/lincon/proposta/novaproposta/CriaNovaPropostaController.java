@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.net.ConnectException;
 import java.net.URI;
 import java.util.Map;
 

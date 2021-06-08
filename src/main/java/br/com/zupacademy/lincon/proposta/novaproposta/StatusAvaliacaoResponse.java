@@ -1,9 +1,9 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
 public enum StatusAvaliacaoResponse {
-    COM_RESTRICAO(StatusAvaliacaoProposta.NAO_ELEGIVEL),SEM_RESTRICAO(StatusAvaliacaoProposta.ELEGIVEL);
+    COM_RESTRICAO(StatusAvaliacaoProposta.NAO_ELEGIVEL), SEM_RESTRICAO(StatusAvaliacaoProposta.ELEGIVEL);
 
-    private  StatusAvaliacaoProposta statusAvaliacaoProposta;
+    private StatusAvaliacaoProposta statusAvaliacaoProposta;
 
 
     StatusAvaliacaoResponse(StatusAvaliacaoProposta statusAvaliacaoProposta) {

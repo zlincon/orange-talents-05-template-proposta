@@ -2,9 +2,8 @@ package br.com.zupacademy.lincon.proposta.sistemasexternos;
 
 import br.com.zupacademy.lincon.proposta.novaproposta.CPForCNPJ;
 import br.com.zupacademy.lincon.proposta.novaproposta.Proposta;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+//@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class NovoDocumentoRequest {
 
     @CPForCNPJ
