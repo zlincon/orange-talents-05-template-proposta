@@ -29,6 +29,10 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private StatusAvaliacaoProposta statusAvaliacao;
 
+    @Deprecated
+    public Proposta() {
+    }
+
     public Proposta(String email,
                     String nome,
                     String endereco,
