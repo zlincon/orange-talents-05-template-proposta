@@ -1,5 +1,6 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
+import br.com.zupacademy.lincon.proposta.associacartao.Cartao;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -28,6 +29,8 @@ public class Proposta {
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusAvaliacaoProposta statusAvaliacao;
+    @OneToOne(mappedBy = "proposta", cascade = CascadeType.MERGE)
+    private Cartao cartao;
 
     @Deprecated
     public Proposta() {
@@ -58,5 +61,11 @@ public class Proposta {
     public void atualizaStatus(StatusAvaliacaoProposta avaliacao) {
         Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.NAO_ELEGIVEL), "Não pode mais trocar uma vez que a proposta é elegível.");
         this.statusAvaliacao = avaliacao;
+    }
+
+    public void associaCartao(String numero) {
+        Assert.isNull(cartao, "Já associaou o cartão");
+        Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.ELEGIVEL), "Não rola associar cartão com proposta nao elegível");
+        this.cartao = new Cartao(this, numero);
     }
 }
