@@ -58,9 +58,25 @@ public class Proposta {
         return documento;
     }
 
+    public StatusAvaliacaoProposta getStatusAvaliacao() {
+        return statusAvaliacao;
+    }
+
     public void atualizaStatus(StatusAvaliacaoProposta avaliacao) {
         Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.NAO_ELEGIVEL), "Não pode mais trocar uma vez que a proposta é elegível.");
         this.statusAvaliacao = avaliacao;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEndereco() {
+        return endereco;
     }
 
     public void associaCartao(String numero) {
