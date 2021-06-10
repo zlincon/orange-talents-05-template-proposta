@@ -19,7 +19,9 @@ import java.net.Socket;
 @Component("Api - Gerar numeração cartão")
 public class ApiGerarCartaoHealthIndicator implements HealthIndicator{
 
-    @Value("${API_CARTAO}")
+    @Value("${proposta.services.sistema-cartao.host}:${proposta" +
+            ".services" +
+            ".sistema-cartao.port}")
     private String url;
 
     @Override

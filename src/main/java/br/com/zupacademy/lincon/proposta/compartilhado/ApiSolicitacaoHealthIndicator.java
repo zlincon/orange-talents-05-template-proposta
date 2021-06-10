@@ -16,7 +16,8 @@ import java.net.Socket;
 @Component("Api - Análise de crédito")
 public class ApiSolicitacaoHealthIndicator implements HealthIndicator, HealthContributor {
 
-        @Value("${API_CPF}")
+        @Value("${proposta.services.analise-financeira.host}:${proposta" +
+                ".services.analise-financeira.port}")
         private String url;
 
     @Override

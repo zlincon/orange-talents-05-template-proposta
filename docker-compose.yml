@@ -62,21 +62,6 @@ services:
       KEYCLOAK_PASSWORD: Pa55w0rd
       POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
 
-#  proposta:
-#    container_name: proposta
-#    build:
-#      dockerfile: Dockerfile
-#      context: .
-#      network: host
-##    environment:
-###      HOST_URL: "host.docker.internal"
-##      API_CPF_EXTERNAL: "host.docker.internal"
-##      API_CARTAO_EXTERNAL: "host.docker.internal"
-#    ports:
-#      - 8080:8080
-#    depends_on:
-#      - analise
-#      - transacoes
 
   analise:
     image: 'zupacademy/analise-financeira'
@@ -149,6 +134,21 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
+
+  proposta:
+    container_name: proposta
+    build:
+      dockerfile: Dockerfile
+      context: .
+#    image: 'proposta'
+    ports:
+      - 8080:8080
+    environment:
+      ANALISE_FINANCEIRA_HOST: http://analise
+      SISTEMA_CARTAO_HOST: http://contas
+    depends_on:
+      - analise
+      - transacoes
 
 volumes:
   grafana-volume:
