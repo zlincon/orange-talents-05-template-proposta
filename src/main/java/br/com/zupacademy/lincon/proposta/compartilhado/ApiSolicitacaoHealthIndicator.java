@@ -4,6 +4,7 @@ import br.com.zupacademy.lincon.proposta.novaproposta.AvaliaProposta;
 import br.com.zupacademy.lincon.proposta.novaproposta.Proposta;
 import feign.RetryableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -15,10 +16,15 @@ import java.net.Socket;
 @Component("Api - Análise de crédito")
 public class ApiSolicitacaoHealthIndicator implements HealthIndicator, HealthContributor {
 
+        @Value("${API_CPF}")
+        private String url;
+
     @Override
     public Health health() {
-        try (Socket socket = new Socket(new java.net.URL("https://localhost" +
-                ":9999/api/colicitacao").getHost(), 9999)) {
+        try (Socket socket =
+                     new Socket(new java.net.URL(url+"/api" +
+                             "/colicitacao").getHost(),
+                             9999)) {
         } catch (Exception e) {
             return Health.down().withDetail("error", e.getMessage()).build();
         }
