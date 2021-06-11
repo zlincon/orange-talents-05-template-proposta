@@ -25,7 +25,7 @@ public class CriaNovaPropostaController {
     @Autowired
     private BloqueiaDocumentoDuplicatoValidator bloqueiaDocumentoDuplicatoValidator;
 
-    @PostMapping(value = "/propostas")
+    @PostMapping(value = "/api/propostas")
     @Transactional
     public ResponseEntity<?> cria(
             @RequestBody @Valid NovaPropostaRequest request,

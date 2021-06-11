@@ -3,7 +3,6 @@ package br.com.zupacademy.lincon.proposta.criabiometria;
 import br.com.zupacademy.lincon.proposta.associacartao.Cartao;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Base64;
@@ -12,13 +11,13 @@ import java.util.Base64;
 @Entity
 public class Biometria {
 
+    private final OffsetDateTime instante = OffsetDateTime.now();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private byte[] digital;
     @ManyToOne(cascade = CascadeType.MERGE)
     private Cartao cartao;
-    private final OffsetDateTime instante = OffsetDateTime.now();
 
     @Deprecated
     public Biometria() {
