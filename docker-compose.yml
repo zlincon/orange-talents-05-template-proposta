@@ -61,7 +61,8 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
       POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
-      KEYCLOAK_FRONTEND_URL: http://keycloak:8080/auth
+#      KEYCLOAK_FRONTEND_URL: http://keycloak:8080/auth
+#    auth-server-url: http://localhost:18080/auth
 
 
   analise:
@@ -137,7 +138,7 @@ services:
       VAULT_ADDR: http://127.0.0.1:8200
 
   proposta:
-    container_name: proposta
+#    container_name: proposta
     build:
       dockerfile: Dockerfile
       context: .
@@ -147,12 +148,14 @@ services:
     environment:
       ANALISE_FINANCEIRA_HOST: http://analise
       SISTEMA_CARTAO_HOST: http://contas
-      KEYCLOAK_ISSUER_URI: http://keycloak:8080/auth/realms/nosso-cartao
-      KEYCLOAK_JWKS_URI: http://keycloak:8080/auth/realms/nosso-cartao/protocol/openid-connect/certs
+      KEYCLOAK_ISSUER_URI: http://keycloak:18080/auth/realms/nosso-cartao
+      KEYCLOAK_JWKS_URI: http://keycloak:18080/auth/realms/nosso-cartao/protocol/openid-connect/certs
     depends_on:
       - analise
       - transacoes
       - keycloak
+    links:
+      - "keycloak:keycloak"
 
 volumes:
   grafana-volume:
