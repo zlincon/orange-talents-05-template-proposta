@@ -27,7 +27,7 @@ public interface IntegracoesCartoes {
                                     NovoAvisoViagemRequest avisoViagemRequest);
 
     @PostMapping("/api/cartoes/{id}/carteiras")
-    ResponseEntity<?> associaPaypal(@PathVariable("id") String numero,
+    ResponseEntity<?> associaCarteiraDigital(@PathVariable("id") String numero,
                                            @RequestBody Map<String,
                                                    String> email);
 }

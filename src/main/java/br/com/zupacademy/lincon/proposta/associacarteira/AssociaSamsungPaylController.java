@@ -24,50 +24,52 @@ import java.util.Map;
 
 @RestController
 @Validated
-public class AssociaPaypalController {
+public class AssociaSamsungPaylController {
 
     private static final Logger log =
-            LoggerFactory.getLogger(AssociaPaypalController.class);
+            LoggerFactory.getLogger(AssociaSamsungPaylController.class);
     protected ExecutorTransacao executorTransacao;
     private CartaoRepository cartaoRepository;
     private IntegracoesCartoes integracoesCartoes;
 
     @Autowired
-    public AssociaPaypalController(CartaoRepository cartaoRepository, ExecutorTransacao executorTransacao, IntegracoesCartoes integracoesCartoes) {
+    public AssociaSamsungPaylController(CartaoRepository cartaoRepository, ExecutorTransacao executorTransacao, IntegracoesCartoes integracoesCartoes) {
         this.cartaoRepository = cartaoRepository;
         this.executorTransacao = executorTransacao;
         this.integracoesCartoes = integracoesCartoes;
     }
 
-    @PostMapping("/api/cartoes/{id}/associa-paypal")
+    @PostMapping("/api/cartoes/{id}/associa-samsung-pay")
     public ResponseEntity<?> associa(@PathVariable("id") Long id,
                                      @Valid @RequestBody AssociaCarteiraRequest associaCarteiraRequest,
                                      UriComponentsBuilder componentsBuilder) {
         Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new NegocioException(
                 "Cartão não encontrado. id: " + id, HttpStatus.NOT_FOUND));
-        CarteiraPaypal carteiraPaypal =
-                cartao.adicionaPaypal(associaCarteiraRequest.getEmail())
+        CarteiraSamsungPay carteiraSamsungPay =
+                cartao.adicionaSamsungPay(associaCarteiraRequest.getEmail())
                         .orElseThrow(() -> new NegocioException("Cartão já " +
-                                "associado a esta carteira Paypal",
+                                "associado a esta carteira Samsung Pay",
                                 HttpStatus.UNPROCESSABLE_ENTITY));
 
-        log.debug("Associando cartão {} com paypal", id);
+        log.debug("Associando cartão {} com samsung pay", id);
         try {
             integracoesCartoes.associaCarteiraDigital(cartao.getNumero(), Map.of("email",
-                    associaCarteiraRequest.getEmail(), "carteira", "PAYPAL"));
-            log.debug("Cartão {} associado com paypal", id);
+                    associaCarteiraRequest.getEmail(), "carteira", "SAMSUNG " +
+                            "PAY"));
+            log.debug("Cartão {} associado com samsung pay", id);
             executorTransacao.updateAndCommit(cartao);
 
         } catch (FeignException e) {
             throw new NegocioException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        log.debug("Associação entre cartão {} e paypal feita no sistema",
+        
+        log.debug("Associação entre cartão {} e samsung pay feita no sistema",
                 id);
 
-        URI uri = componentsBuilder.path("/api/cartoes/{id}/carteiras/paypal" +
-                "/{idPaypal" +
-                "}").build(id, carteiraPaypal.getId());
+        URI uri = componentsBuilder.path("/api/cartoes/{id}/carteiras/samsung" +
+                "-pay" +
+                "/{idSamsungPay" +
+                "}").build(id, carteiraSamsungPay.getId());
 
         return ResponseEntity.created(uri).build();
 
