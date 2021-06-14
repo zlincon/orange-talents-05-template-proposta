@@ -34,7 +34,7 @@ public class AvisoViagem {
     public AvisoViagem(Cartao cartao, NovoAvisoViagemRequest request, String navegador, String remoteAddr) {
         this.cartao = cartao;
         this.destino = request.getDestino();
-        this.dataTermino = request.getDataTermino();
+        this.dataTermino = request.getValidoAte();
         this.navegador = navegador;
         this.remoteAddr = remoteAddr;
     }

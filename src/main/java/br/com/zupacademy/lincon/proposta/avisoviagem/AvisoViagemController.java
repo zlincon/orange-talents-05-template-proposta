@@ -3,6 +3,8 @@ package br.com.zupacademy.lincon.proposta.avisoviagem;
 import br.com.zupacademy.lincon.proposta.associacartao.Cartao;
 import br.com.zupacademy.lincon.proposta.criabiometria.CartaoRepository;
 import br.com.zupacademy.lincon.proposta.exceptionhandlers.NegocioException;
+import br.com.zupacademy.lincon.proposta.sistemasexternos.IntegracoesCartoes;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,8 @@ public class AvisoViagemController {
     private CartaoRepository cartaoRepository;
     @Autowired
     private EntityManager manager;
+    @Autowired
+    private IntegracoesCartoes integracoesCartoes;
 
     @PostMapping("/api/cartoes/{id}/aviso-viagem")
     @Transactional
@@ -50,14 +54,20 @@ public class AvisoViagemController {
                 " WHERE av" +
                 ".dataTermino like :dataTermino").setParameter(
                 "dataTermino",
-                request.getDataTermino()).getResultList();
+                request.getValidoAte()).getResultList();
 
         if (!dataTermino.isEmpty()){
             throw new NegocioException("Aviso já cadastrado",
                     HttpStatus.BAD_REQUEST);
         }
 
-        manager.persist(avisoViagem);
+        try {
+            manager.persist(avisoViagem);
+            System.out.println(request.toString());
+            integracoesCartoes.avisoViagem(cartao.getNumero(), request);
+        }catch (FeignException e) {
+            throw new NegocioException(e.getMessage());
+        }
 
         URI uri = uriComponentsBuilder.path("/api/avisos/{id}").build(avisoViagem.getId());
         return ResponseEntity.created(uri).build();
