@@ -56,12 +56,16 @@ public class Cartao {
         }
         Assert.state(!this.biometrias.isEmpty(), "Nenhum cartão pode ser " +
                 "bloqueado se não tiver digital associada");
-        if(!this.statusUsos.isEmpty() && this.statusUsos.get(statusUsos.size() - 1).getStatusSolicitado().equals(PossiveisStatusUso.BLOQUEADO)){
+        if(isBloqueado()){
             throw new NegocioException("Cartão já está com status: BLOQUEADO",
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
         this.statusUsos.add(new StatusUso(PossiveisStatusUso.BLOQUEADO, this
                 , userAgent, ipRemoto));
+    }
+
+    public boolean isBloqueado() {
+        return !this.statusUsos.isEmpty() && this.statusUsos.get(statusUsos.size() - 1).getStatusSolicitado().equals(PossiveisStatusUso.BLOQUEADO);
     }
 
     public String getNumero() {
