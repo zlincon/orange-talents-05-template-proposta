@@ -1,5 +1,6 @@
 package br.com.zupacademy.lincon.proposta.associacartao;
 
+import br.com.zupacademy.lincon.proposta.associacarteira.CarteiraPaypal;
 import br.com.zupacademy.lincon.proposta.bloqueiocartao.PossiveisStatusUso;
 import br.com.zupacademy.lincon.proposta.bloqueiocartao.StatusUso;
 import br.com.zupacademy.lincon.proposta.criabiometria.Biometria;
@@ -23,14 +24,16 @@ public class Cartao {
     @OneToOne
     private Proposta proposta;
     @NotBlank
-//    @CreditCardNumber(ignoreNonDigitCharacters = true)
+    //@CreditCardNumber(ignoreNonDigitCharacters = true)
     private String numero;
-//    @ElementCollection
-//    @Embedded
+    //@ElementCollection
+    //@Embedded
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
     private Set<Biometria> biometrias = new HashSet<>();
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.ALL)
     private List<StatusUso> statusUsos = new LinkedList<>();
+    @OneToOne(mappedBy = "cartao", cascade = CascadeType.PERSIST)
+    private CarteiraPaypal carteiraPaypal;
 
     @Deprecated
     public Cartao() {
@@ -43,20 +46,19 @@ public class Cartao {
     }
 
     /**
-     *
      * @param userAgent navegador que solicitou o bloqueio
-     * @param ipRemoto ip da solicitação
+     * @param ipRemoto  ip da solicitação
      */
     @Transactional
-    public void bloquear(@NotBlank String userAgent,@NotBlank String ipRemoto) {
-        if(this.biometrias.isEmpty()) {
+    public void bloquear(@NotBlank String userAgent, @NotBlank String ipRemoto) {
+        if (this.biometrias.isEmpty()) {
             throw new NegocioException("É necessário cadastro de biometria " +
                     "para bloquear cartão.",
                     HttpStatus.BAD_REQUEST);
         }
         Assert.state(!this.biometrias.isEmpty(), "Nenhum cartão pode ser " +
                 "bloqueado se não tiver digital associada");
-        if(isBloqueado()){
+        if (isBloqueado()) {
             throw new NegocioException("Cartão já está com status: BLOQUEADO",
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -70,5 +72,14 @@ public class Cartao {
 
     public String getNumero() {
         return numero;
+    }
+
+    public Optional<CarteiraPaypal> adicionaPaypal(String email) {
+        if (this.carteiraPaypal != null) {
+            return Optional.empty();
+        }
+
+        this.carteiraPaypal = new CarteiraPaypal(this, email);
+        return Optional.of(this.carteiraPaypal);
     }
 }
