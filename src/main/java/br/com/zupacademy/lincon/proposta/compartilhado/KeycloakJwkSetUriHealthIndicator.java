@@ -13,12 +13,14 @@ public class KeycloakJwkSetUriHealthIndicator implements HealthIndicator, Health
 
         @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
         private String url;
+        @Value("${keycloak.jwt.jwk-set-set-uri.port}")
+        private Integer port;
 
     @Override
     public Health health() {
         try (Socket socket =
                      new Socket(new java.net.URL(url).getHost(),
-                             18080)) {
+                             port)) {
         } catch (Exception e) {
             return Health.down().withDetail("error", e.getMessage()).build();
         }

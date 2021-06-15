@@ -13,12 +13,14 @@ public class KeycloakJwtIssuerUriHealthIndicator implements HealthIndicator, Hea
 
         @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
         private String url;
+        @Value("${keycloak.jwt.issuer-uri.port}")
+        private Integer port;
 
     @Override
     public Health health() {
         try (Socket socket =
                      new Socket(new java.net.URL(url).getHost(),
-                             18080)) {
+                             port)) {
         } catch (Exception e) {
             return Health.down().withDetail("error", e.getMessage()).build();
         }
