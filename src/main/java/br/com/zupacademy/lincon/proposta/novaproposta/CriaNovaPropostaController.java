@@ -3,6 +3,9 @@ package br.com.zupacademy.lincon.proposta.novaproposta;
 import br.com.zupacademy.lincon.proposta.exceptionhandlers.NegocioException;
 import feign.FeignException;
 import feign.RetryableException;
+import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +21,31 @@ import java.util.Map;
 
 @RestController
 public class CriaNovaPropostaController {
-    @Autowired
     private ExecutorTransacao executorTransacao;
-    @Autowired
     private AvaliaProposta avaliaProposta;
-    @Autowired
     private BloqueiaDocumentoDuplicatoValidator bloqueiaDocumentoDuplicatoValidator;
+    private final Tracer tracer;
+
+    @Autowired
+    public CriaNovaPropostaController(ExecutorTransacao executorTransacao,
+                                      AvaliaProposta avaliaProposta, BloqueiaDocumentoDuplicatoValidator bloqueiaDocumentoDuplicatoValidator, Tracer tracer) {
+        this.executorTransacao = executorTransacao;
+        this.avaliaProposta = avaliaProposta;
+        this.bloqueiaDocumentoDuplicatoValidator =
+                bloqueiaDocumentoDuplicatoValidator;
+        this.tracer = tracer;
+    }
 
     @PostMapping(value = "/api/propostas")
     @Transactional
     public ResponseEntity<?> cria(
             @RequestBody @Valid NovaPropostaRequest request,
             UriComponentsBuilder builder) {
+
+        Span activeSpan = tracer.activeSpan();
+        String userEmail = activeSpan.getBaggageItem("user.email");
+        activeSpan.setBaggageItem("user.email", userEmail);
+        activeSpan.log("Meu log");
 
         if (!bloqueiaDocumentoDuplicatoValidator.estaValido(request)) {
             throw new NegocioException("Documento já existe em nossa base de " +
