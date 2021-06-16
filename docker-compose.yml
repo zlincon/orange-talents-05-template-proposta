@@ -112,8 +112,12 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-volume:/etc/prometheus/
     network_mode: bridge
+#    expose:
+#      - 9090
+#    on bridge network mode
     ports:
       - "9090:9090"
 
@@ -136,27 +140,27 @@ services:
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
 
-#  proposta:
-##    container_name: proposta
-#    build:
-#      dockerfile: Dockerfile
-#      context: .
-##    image: 'proposta'
-#    ports:
-#      - 8081:8081
-#    environment:
-#      ANALISE_FINANCEIRA_HOST: http://analise
-#      SISTEMA_CARTAO_HOST: http://contas
-#      KEYCLOAK_ISSUER_URI: http://keycloak:8080/auth/realms/nosso-cartao
-#      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/auth/realms/nosso-cartao/protocol/openid-connect/certs
-#      KEYCLOAK_ISSUER_URI_PORT: 8080
-#      KEYCLOAK_JWK_SET_URI_PORT: 8080
-#    depends_on:
-#      - analise
-#      - transacoes
-#      - keycloak
-##    links:
-##      - "keycloak:keycloak"
+  proposta:
+#    container_name: proposta
+    build:
+      dockerfile: Dockerfile
+      context: .
+#    image: 'proposta'
+    ports:
+      - 8081:8081
+    environment:
+      ANALISE_FINANCEIRA_HOST: http://analise
+      SISTEMA_CARTAO_HOST: http://contas
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/auth/realms/nosso-cartao
+      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/auth/realms/nosso-cartao/protocol/openid-connect/certs
+      KEYCLOAK_ISSUER_URI_PORT: 8080
+      KEYCLOAK_JWK_SET_URI_PORT: 8080
+    depends_on:
+      - analise
+      - transacoes
+      - keycloak
+#    links:
+#      - "keycloak:keycloak"
 
 volumes:
   grafana-volume:
