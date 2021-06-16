@@ -1,6 +1,7 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
 import br.com.zupacademy.lincon.proposta.associacartao.Cartao;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -23,7 +24,6 @@ public class Proposta {
     private String endereco;
     @Positive
     private BigDecimal salario;
-    @CPForCNPJ
     @NotBlank
     private String documento;
     @NotNull
@@ -41,11 +41,13 @@ public class Proposta {
                     String endereco,
                     BigDecimal salario,
                     String documento) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodedDocuemento = bCryptPasswordEncoder.encode(documento);
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;
         this.salario = salario;
-        this.documento = documento;
+        this.documento = encodedDocuemento;
         this.statusAvaliacao = StatusAvaliacaoProposta.NAO_ELEGIVEL;
     }
 

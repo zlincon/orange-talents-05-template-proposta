@@ -1,6 +1,7 @@
 package br.com.zupacademy.lincon.proposta.novaproposta;
 
 import br.com.zupacademy.lincon.proposta.compartilhado.UniqueValue;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.constraints.Email;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 public class NovaPropostaRequest {
     @Email
@@ -35,7 +37,8 @@ public class NovaPropostaRequest {
 
 
     public Proposta toModel() {
-        return new Proposta(email, nome, endereco, salario, documento);
+        return new Proposta(email, nome, endereco, salario,
+                documento);
     }
 
     public String getDocumento() {
